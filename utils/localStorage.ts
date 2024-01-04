@@ -7,3 +7,4 @@ export const getLocalStorageLanguage = ():any => {
 export const setLocalStorageLanguage = (language: LanguageType) => {
   localStorage.setItem('language', language);
 }
+

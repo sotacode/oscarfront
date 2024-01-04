@@ -1,14 +1,12 @@
 import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code"
-import { button as buttonStyles } from "@nextui-org/theme";
 import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { subtitle } from "@/components/primitives";
 import { FaWhatsapp, FaFacebook, FaAt } from "react-icons/fa6";
 import { Button } from "@nextui-org/button";
 import { FaCheckCircle } from "react-icons/fa";
 import Image from "next/image";
+import { ContactForm } from "@/components/contactform";
+import {Divider} from "@nextui-org/react";
 
 export default function Home() {
 	return (
@@ -56,8 +54,13 @@ export default function Home() {
 				</div>
 			</div>
 
+			<Divider className="my-4 max-w-2xl"/>
+			<div className="flex flex-col w-full justify-center mt-5">
+				<ContactForm />
+			</div>
+
 			<div className="mt-5 text-center max-w-5/6 sm:flex">
-				<div className="block items-center basis-1/3 gap-2 m-2">
+				<div className="block items-center basis-1/2 gap-2 m-2">
 					<Button color="primary" variant="bordered" size="md">
 						<Link
 							isExternal
@@ -69,7 +72,7 @@ export default function Home() {
 						</Link>
 					</Button>
 				</div>
-				<div className="block items-center basis-1/3 gap-2 m-2">
+				<div className="block items-center basis-1/2 gap-2 m-2">
 					<Button color="primary" variant="bordered" size="md">
 						<Link
 							isExternal
@@ -81,7 +84,7 @@ export default function Home() {
 						</Link>
 					</Button>
 				</div>
-				<div className="block items-center basis-1/3 gap-2 m-2">
+				{/* <div className="block items-center basis-1/3 gap-2 m-2">
 					<Button color="primary" variant="bordered" size="md">
 						<Link
 							isExternal
@@ -92,7 +95,7 @@ export default function Home() {
 							<h1 className="text-md">holarina1@gmail.com</h1>
 						</Link>
 					</Button>
-				</div>
+				</div> */}
 			</div>
 		</section>
 	);
