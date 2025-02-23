@@ -35,7 +35,7 @@ export const Navbar = () => {
 					</NextLink>
 				</NavbarBrand>
 			</NavbarContent>
-			<NavbarContent className="basis-3/5" justify="center">
+			{/* <NavbarContent className="basis-3/5" justify="center">
 				<ul className="hidden sm:flex gap-4 justify-start ml-2">
 					{siteConfig.navItems.map((item) => (
 						<NavbarItem key={item.href}>
@@ -52,12 +52,12 @@ export const Navbar = () => {
 						</NavbarItem>
 					))}
 				</ul>
-			</NavbarContent>
+			</NavbarContent> */}
 			<NavbarContent className="basis-1/5 pl-4" justify="end">
 				<NavbarMenuToggle className="flex sm:hidden"/>
 			</NavbarContent>
 
-			<NavbarMenu>
+			{/* <NavbarMenu>
 				<div className="mx-4 mt-2 flex flex-col gap-2">
 					{siteConfig.navMenuItems.map((item, index) => (
 						<NavbarMenuItem key={`${item}-${index}`}>
@@ -77,7 +77,7 @@ export const Navbar = () => {
 						</NavbarMenuItem>
 					))}
 				</div>
-			</NavbarMenu>
+			</NavbarMenu> */}
 		</NextUINavbar >
 	);
 };
