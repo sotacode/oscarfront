@@ -39,7 +39,7 @@ const HeroSection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        Providing personalized, expert auto care for your vehicle's needs.
+        Providing personalized, expert auto care for your vehicle&apos;s needs.
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 20 }}

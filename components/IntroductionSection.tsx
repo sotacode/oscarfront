@@ -28,7 +28,7 @@ const IntroductionSection = () => {
   )
 }
 
-const FeatureCard = ({ icon, title, description }) => (
+const FeatureCard = ({ icon, title, description } : any) => (
   <Card>
     <CardBody className="text-center">
       <div className="flex justify-center mb-4">{icon}</div>
