@@ -12,7 +12,7 @@ const ContactSection = () => {
             <ul className="space-y-4">
               <li className="flex items-center">
                 <Phone className="w-6 h-6 mr-2" />
-                <span>(123) 456-7890</span>
+                <span>(+64) 02 2104 8027</span>
               </li>
               <li className="flex items-center">
                 <Mail className="w-6 h-6 mr-2" />

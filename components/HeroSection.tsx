@@ -2,7 +2,7 @@
 import { Button, Image } from "@nextui-org/react"
 import { motion } from "framer-motion"
 
-const HeroSection = () => {
+const HeroSection = ({scrollToBooking}:any) => {
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center text-center bg-gradient-to-br from-[#00a79e] to-[#008080] px-4">
       <motion.div
@@ -46,7 +46,7 @@ const HeroSection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
       >
-        <Button size="lg" color="warning" variant="shadow" className="font-semibold">
+        <Button size="lg" color="warning" variant="shadow" className="font-semibold" onPress={scrollToBooking}>
           Book Now
         </Button>
       </motion.div>

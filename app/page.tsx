@@ -1,3 +1,4 @@
+'use client'
 import { Link } from "@nextui-org/link";
 import { siteConfig } from "@/config/site";
 import { subtitle } from "@/components/primitives";
@@ -13,16 +14,22 @@ import IntroductionSection from "@/components/IntroductionSection";
 import WorkShowcaseSection from "@/components/WorkShowcaseSection";
 import BookingSection from "@/components/BookingSection";
 import ContactSection from "@/components/ContactSection";
+import { useRef } from "react";
 
 export default function Home() {
+	const sectionRef = useRef<HTMLDivElement>(null);
+
+	const scrollToSection = () => {
+		sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
 	return (
 		<section className="min-h-screen w-full bg-gray-100 position-static">
-      <HeroSection />
-      <IntroductionSection />
-      <WorkShowcaseSection />
-      {/* <BookingSection /> */}
-      <ContactSection />
-    </section>
+			<HeroSection scrollToBooking={scrollToSection}/>
+			<IntroductionSection />
+			<WorkShowcaseSection />
+			<BookingSection sectionRef={sectionRef}/>
+			<ContactSection />
+		</section>
 		// <section className="flex flex-col items-center justify-center gap-4 py-3 md:py-10">
 		// 	<div className="flex flex-col w-full">
 		// 		<div className="full-w m-auto">
@@ -30,7 +37,7 @@ export default function Home() {
 		// 		</div>
 		// 		<div className="mt-8 w-full justify-center items-center text-center flex flex-col">
 		// 			<div className="flex text-center justify-center">
-						
+
 		// 				<div className="flex items-center justify-center mt-2 min-w-[300px] w-1/3">
 		// 					<FaCheckCircle size={30} color="#00a79e" />
 		// 					<h2>
