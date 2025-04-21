@@ -46,7 +46,7 @@ const HeroSection = ({scrollToBooking}:any) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
       >
-        <Button size="lg" color="warning" variant="shadow" className="font-semibold" onPress={scrollToBooking}>
+        <Button size="lg" color="secondary" variant="shadow" className="font-semibold" onPress={scrollToBooking}>
           Book Now
         </Button>
       </motion.div>

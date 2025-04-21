@@ -15,6 +15,7 @@ import WorkShowcaseSection from "@/components/WorkShowcaseSection";
 import BookingSection from "@/components/BookingSection";
 import ContactSection from "@/components/ContactSection";
 import { useRef } from "react";
+import ServicesSection from "@/components/ServicesSection";
 
 export default function Home() {
 	const sectionRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,7 @@ export default function Home() {
 	return (
 		<section className="min-h-screen w-full bg-gray-100 position-static">
 			<HeroSection scrollToBooking={scrollToSection}/>
+			<ServicesSection />
 			<IntroductionSection />
 			<WorkShowcaseSection />
 			<BookingSection sectionRef={sectionRef}/>

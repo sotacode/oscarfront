@@ -16,7 +16,7 @@ const ContactSection = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="w-6 h-6 mr-2" />
-                <span>info@carmechanic.com</span>
+                <span>osmozcarauckland@gmail.com</span>
               </li>
               <li className="flex items-center">
                 <MapPin className="w-6 h-6 mr-2" />
@@ -27,15 +27,15 @@ const ContactSection = () => {
           <div>
             <h3 className="text-2xl font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <Button isIconOnly variant="flat" aria-label="Facebook">
+              <Button isIconOnly variant="flat" aria-label="Facebook" as="a" href="https://www.facebook.com/osmozautoauckland" target="_blank" rel="noopener noreferrer">
                 <Facebook className="w-5 h-5" />
               </Button>
-              <Button isIconOnly variant="flat" aria-label="Twitter">
+              {/* <Button isIconOnly variant="flat" aria-label="Twitter">
                 <Twitter className="w-5 h-5" />
               </Button>
               <Button isIconOnly variant="flat" aria-label="Instagram">
                 <Instagram className="w-5 h-5" />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
