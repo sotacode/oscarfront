@@ -72,7 +72,7 @@ const ServicesSection = () => {
             className="object-cover mb-4"
           />
           <p className="text-lg text-gray-700 text-center max-w-2xl mb-4">
-            No need to worry about getting your car to a garage. Our fully equipped mobile service van brings our expert team right to your doorstep, anywhere in Auckland. Whether you're at home, work, or stuck somewhere - we'll be there to get you back on the road!
+            No need to worry about getting your car to a garage. Our fully equipped mobile service van brings our expert team right to your doorstep, anywhere in Auckland. Whether you&apos;re at home, work, or stuck somewhere - we&apos;ll be there to get you back on the road!
           </p>
           <div className="flex flex-wrap justify-center items-center gap-4 text-gray-600">
             <span className="flex items-center">
