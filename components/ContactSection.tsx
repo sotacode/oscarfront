@@ -20,7 +20,7 @@ const ContactSection = () => {
               </li>
               <li className="flex items-center">
                 <MapPin className="w-6 h-6 mr-2" />
-                <span>123 Auto Street, Carville, ST 12345</span>
+                <span>2/886 Dominion Road, Mt Eden, Auckland</span>
               </li>
             </ul>
           </div>

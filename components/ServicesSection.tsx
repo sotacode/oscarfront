@@ -64,16 +64,28 @@ const ServicesSection = () => {
           <h3 className="text-2xl md:text-3xl font-bold text-[#008785] text-center mb-4">
             We Come to You!
           </h3>
-          <Image
-            src="/work/osmozstuff.png"
-            alt="Osmoz Mobile Service Team"
-            width={500}
-            height={300}
-            className="object-cover mb-4"
-          />
-          <p className="text-lg text-gray-700 text-center max-w-2xl mb-4">
-            No need to worry about getting your car to a garage. Our fully equipped mobile service van brings our expert team right to your doorstep, anywhere in Auckland. Whether you&apos;re at home, work, or stuck somewhere - we&apos;ll be there to get you back on the road!
-          </p>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            <div className="w-full md:w-1/3">
+              <Image
+                src="/work/osmozstuff.png"
+                alt="Osmoz Mobile Service Team"
+                width={500}
+                height={300}
+                className="object-cover"
+              />
+            </div>
+            <div className="w-full md:w-2/3">
+              <p className="text-lg text-gray-700 text-left pl-8">
+                No need to worry about getting your car to a garage. Our fully equipped mobile service van brings our expert team right to your doorstep, anywhere in Auckland. Whether you&apos;re at home, work, or stuck somewhere - we&apos;ll be there to get you back on the road!
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-xl text-gray-800 p-4">
+            <span className="text-[#008785] text-2xl">✓</span>
+            <p className="font-medium">
+              Modern diagnostic equipment for accurate repairs
+            </p>
+          </div>
           <div className="flex flex-wrap justify-center items-center gap-4 text-gray-600">
             <span className="flex items-center">
               <svg className="w-5 h-5 text-[#008785] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -98,12 +110,6 @@ const ServicesSection = () => {
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-2 text-xl text-gray-800 bg-white p-4 rounded-lg shadow-sm">
-          <span className="text-[#008785] text-2xl">✓</span>
-          <p className="font-medium">
-            Modern diagnostic equipment for accurate repairs
-          </p>
-        </div>
       </motion.div>
     </div>
   )
