@@ -8,7 +8,6 @@ import { FaCheckCircle } from "react-icons/fa";
 import Image from "next/image";
 import { ContactForm } from "@/components/contactform";
 import { Divider } from "@nextui-org/react";
-import { BookingIframe } from "@/components/booking";
 import HeroSection from "@/components/HeroSection";
 import IntroductionSection from "@/components/IntroductionSection";
 import WorkShowcaseSection from "@/components/WorkShowcaseSection";
@@ -16,6 +15,7 @@ import BookingSection from "@/components/BookingSection";
 import ContactSection from "@/components/ContactSection";
 import { useRef } from "react";
 import ServicesSection from "@/components/ServicesSection";
+import Script from "next/script";
 
 export default function Home() {
 	const sectionRef = useRef<HTMLDivElement>(null);
@@ -24,14 +24,16 @@ export default function Home() {
 		sectionRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
 	return (
-		<section className="min-h-screen w-full bg-gray-100 position-static">
-			<HeroSection scrollToBooking={scrollToSection}/>
-			<ServicesSection />
-			<IntroductionSection />
-			<WorkShowcaseSection />
-			<BookingSection sectionRef={sectionRef}/>
-			<ContactSection />
-		</section>
+		<>
+			<section className="min-h-screen w-full bg-gray-100 position-static">
+				<HeroSection scrollToBooking={scrollToSection} />
+				<ServicesSection />
+				<IntroductionSection />
+				<WorkShowcaseSection />
+				<BookingSection sectionRef={sectionRef} />
+				<ContactSection />
+			</section>
+		</>
 		// <section className="flex flex-col items-center justify-center gap-4 py-3 md:py-10">
 		// 	<div className="flex flex-col w-full">
 		// 		<div className="full-w m-auto">
