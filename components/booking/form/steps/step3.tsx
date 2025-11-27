@@ -32,10 +32,6 @@ export default function Step3() {
       {errors.serviceType && (
         <div className="text-red-500 text-sm mb-2">{errors.serviceType.message?.toString()}</div>
       )}
-      {/* Show duration for confirmation */}
-      {selectedService && (
-        <div className="text-gray-600 text-sm">Duration: {watch("serviceDuration")} seconds</div>
-      )}
     </div>
   );
 }
