@@ -8,6 +8,7 @@ import { ThemeProviderProps } from "next-themes/dist/types";
 import LanguageProvider from "@/context/language/LanguageProvider";
 import Script from "next/script";
 import { setOptions } from "@googlemaps/js-api-loader";
+import { SessionProvider } from "next-auth/react";
 
 
 export interface ProvidersProps {
@@ -19,13 +20,13 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 	const router = useRouter();
 	React.useEffect(() => {
 		setOptions({
-		  key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY_HERE",
-		  libraries: ["places", "marker"],
+			key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY_HERE",
+			libraries: ["places", "marker"],
 		});
 	}, []);
 
 	return (
-		<>
+		<SessionProvider>
 			<Script
 				async
 				src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
@@ -36,6 +37,6 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 					<NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
 				</NextUIProvider>
 			</LanguageProvider>
-		</>
+		</SessionProvider>
 	);
 }

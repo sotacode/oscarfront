@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@googlemaps/js-api-loader": "^2.0.1",
+    "@googlemaps/js-api-loader": "^2.0.2",
     "@hookform/resolvers": "^5.2.2",
     "@nextui-org/button": "2.0.26",
     "@nextui-org/code": "2.0.24",
@@ -33,10 +33,12 @@
     "eslint": "8.48.0",
     "eslint-config-next": "14.0.2",
     "framer-motion": "^11.18.2",
+    "googleapis": "^166.0.0",
     "intl-messageformat": "^10.5.0",
     "lottie-web": "^5.13.0",
     "lucide-react": "^0.475.0",
     "next": "14.0.2",
+    "next-auth": "^4.24.13",
     "next-themes": "^0.2.1",
     "postcss": "8.4.31",
     "react": "18.2.0",

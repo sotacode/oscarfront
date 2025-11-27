@@ -1,49 +1,47 @@
 "use client";
-import { Checkbox, Input } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import { Checkbox } from "@nextui-org/react";
+import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 export default function Step5() {
     const { register, getValues, setValue, formState: { errors } } = useFormContext();
     const allData = getValues();
     const [loading, setLoading] = useState(false);
+    const [confirmed, setConfirmed] = useState(false);
+    const [status, setStatus] = useState<"idle" | "created" | "failed">("idle");
     const lottieRef = React.useRef<HTMLDivElement | null>(null);
     const lottieAnimRef = React.useRef<any>(null);
 
-    useEffect(() => {
-        // Fetch availability from API
-        const fetchAvailability = async () => {
+    const handleSubmit = async () => {
+        if (!confirmed) {
+            alert("Please confirm the information is correct");
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            // Load lottie animation
+            const lottieModule: any = await import('lottie-web');
+            const lottie = lottieModule.default || lottieModule;
             try {
-                // start loading animation
-                setLoading(true);
-                // lazy import lottie-web
-                const lottieModule: any = await import('lottie-web');
-                const lottie = lottieModule.default || lottieModule;
-                // try to fetch the JSON and render it
-                try {
-                    const lottieRes = await fetch('/sandyloading.lottie');
-                    if (!lottieRes.ok) throw new Error('Failed to fetch lottie');
+                const lottieRes = await fetch('/sandyloading.lottie');
+                if (lottieRes.ok) {
                     const contentType = lottieRes.headers.get('content-type') || '';
                     let lottieJson: any = null;
 
                     if (contentType.includes('application/json')) {
-                        // response is JSON
                         lottieJson = await lottieRes.json();
                     } else {
-                        // peek at the first bytes to detect a ZIP (.lottie is often a zipped archive)
                         const ab = await lottieRes.arrayBuffer();
                         const bytes = new Uint8Array(ab);
-                        const isZip = bytes[0] === 0x50 && bytes[1] === 0x4B; // 'PK' header
-                        if (isZip) {
-                            // It's a zipped .lottie file (PK..). lottie-web expects a JSON animationData; skip.
-                            console.info('sandyloading.lottie appears to be a zipped .lottie archive; skipping animation.');
-                        } else {
-                            // try to decode and parse as text JSON
+                        const isZip = bytes[0] === 0x50 && bytes[1] === 0x4B;
+                        if (!isZip) {
                             try {
                                 const text = new TextDecoder().decode(ab);
                                 lottieJson = JSON.parse(text);
                             } catch (parseErr) {
-                                console.info('Could not parse lottie JSON, skipping animation.');
+                                console.info('Could not parse lottie JSON');
                             }
                         }
                     }
@@ -61,49 +59,40 @@ export default function Step5() {
                             console.warn('lottie loadAnimation failed', innerErr);
                         }
                     }
-                } catch (e) {
-                    console.info('Could not load lottie, skipping animation');
                 }
-                const body = {
-                    details: {
-                        day: allData.appointmentDay,
-                        hour: allData.appointmentHour,
-                        clientName: allData.fullName,
-                        clientEmail: allData.email,
-                        clientPlace: allData.formatted_address || allData.address,
-                        placeId: allData.place_id,
-                        placeUrl: `https://www.google.com/maps/place/?q=place_id:${allData.place_id}`,
-                        clientPhone: allData.phone,
-                        service: allData.serviceType,
-                        clientDescription: allData.additionalInfo || "",
-                        serviceDuration: 2700
-                    }
-                };
-                const res = await fetch('http://localhost:5678/webhook-test/8dfcc3a8-a92f-4e81-85cc-35427e1c7932', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'osmoz-appointments-key': `3zUZFg1RS2uRvpmuIh7awCv0joqa6u6mDBEsiz4tSFuUlt8obK8YU5RTSvl25g1l`,
-                    },
-                    body: JSON.stringify(body),
-                });
-                if (!res.ok) throw new Error('Network response was not ok');
-                const json = await res.json();
-                // Expecting array with object that has `output` array
-                const out = Array.isArray(json) && json[0] && json[0].output ? json[0].output : [];
-            } catch (err) {
-                console.error('Failed to load availability', err);
-            } finally {
-                // stop loading and cleanup animation
-                setLoading(false);
-                if (lottieAnimRef.current) {
-                    try { lottieAnimRef.current.destroy(); } catch (e) { }
-                    lottieAnimRef.current = null;
-                }
+            } catch (e) {
+                console.info('Could not load lottie');
             }
-        };
-        fetchAvailability();
-    }, []);
+
+            const res = await fetch('/api/create-appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(allData),
+            });
+
+            const json = await res.json();
+
+            if (json.status === "created") {
+                setStatus("created");
+                setValue("status", "created");
+            } else {
+                setStatus("failed");
+                setValue("status", "failed");
+            }
+        } catch (err) {
+            console.error('Failed to create appointment', err);
+            setStatus("failed");
+            setValue("status", "failed");
+        } finally {
+            setLoading(false);
+            if (lottieAnimRef.current) {
+                try { lottieAnimRef.current.destroy(); } catch (e) { }
+                lottieAnimRef.current = null;
+            }
+        }
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -116,54 +105,127 @@ export default function Step5() {
                             <div className="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin" />
                         </div>
                     )}
-                    <p className="text-white">Loading available slots for your address...</p>
+                    <p className="text-white">Creating your appointment...</p>
                 </div>
             )}
 
-            {!loading &&
-                (
-                    (allData?.status) === "created" ? (
-                        <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
-                            <h3 className="text-lg font-semibold text-green-700 mb-2">Booking created</h3>
-                            <p className="text-sm text-green-800 mb-4">Your booking was created successfully.</p>
-                            <div className="text-sm text-gray-700">
-                                <div><strong>Day:</strong> {allData?.appointmentDay || "-"}</div>
-                                <div><strong>Hour:</strong> {allData?.appointmentHour || "-"}</div>
-                                <div><strong>Name:</strong> {allData?.fullName || "-"}</div>
-                                <div className="mt-3">
-                                    <a
-                                        className="inline-block px-4 py-2 bg-green-600 text-white rounded"
-                                        href="/"
-                                    >
-                                        Done
-                                    </a>
+            {status === "idle" && (
+                <div className="flex flex-col gap-6">
+                    <h2 className="text-2xl font-bold">Review Your Booking</h2>
+
+                    <div className="bg-gray-50 p-6 rounded-lg space-y-4">
+                        <div>
+                            <h3 className="font-semibold text-lg mb-3">Personal Information</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <span className="text-gray-600">Name:</span>
+                                    <p className="font-medium">{allData.fullName}</p>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Email:</span>
+                                    <p className="font-medium">{allData.email}</p>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Phone:</span>
+                                    <p className="font-medium">{allData.phone}</p>
                                 </div>
                             </div>
                         </div>
-                    ) : (
-                        <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
-                            <h3 className="text-lg font-semibold text-red-700 mb-2">Booking failed</h3>
-                            <p className="text-sm text-red-800 mb-4">There was an error creating your booking.</p>
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => window.history.back()}
-                                    className="px-4 py-2 bg-white border rounded"
-                                >
-                                    Go back
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => window.location.reload()}
-                                    className="px-4 py-2 bg-red-600 text-white rounded"
-                                >
-                                    Retry
-                                </button>
+
+                        <div className="border-t pt-4">
+                            <h3 className="font-semibold text-lg mb-3">Service Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <span className="text-gray-600">Service:</span>
+                                    <p className="font-medium">{allData.serviceType}</p>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Date & Time:</span>
+                                    <p className="font-medium">{allData.appointmentDay} at {allData.appointmentHour}</p>
+                                </div>
                             </div>
                         </div>
-                    )
 
-                )}
+                        <div className="border-t pt-4">
+                            <h3 className="font-semibold text-lg mb-3">Location</h3>
+                            <p className="font-medium">{allData.formatted_address || allData.address}</p>
+                        </div>
+
+                        {allData.additionalInfo && (
+                            <div className="border-t pt-4">
+                                <h3 className="font-semibold text-lg mb-3">Additional Information</h3>
+                                <p className="font-medium">{allData.additionalInfo}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg">
+                        <Checkbox
+                            isSelected={confirmed}
+                            onValueChange={setConfirmed}
+                        >
+                            <span className="text-sm">
+                                I confirm that all the information above is correct and I want to proceed with booking this appointment.
+                            </span>
+                        </Checkbox>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled={!confirmed}
+                        className={`w-full py-3 rounded-lg font-semibold ${confirmed
+                                ? 'bg-green-600 text-white hover:bg-green-700'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                    >
+                        Confirm Booking
+                    </button>
+                </div>
+            )}
+
+            {status === "created" && (
+                <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 className="text-lg font-semibold text-green-700 mb-2">Booking Created!</h3>
+                    <p className="text-sm text-green-800 mb-4">Your appointment has been successfully created. You will receive a calendar invitation at {allData.email}.</p>
+                    <div className="text-sm text-gray-700">
+                        <div><strong>Date:</strong> {allData.appointmentDay}</div>
+                        <div><strong>Time:</strong> {allData.appointmentHour}</div>
+                        <div><strong>Service:</strong> {allData.serviceType}</div>
+                        <div className="mt-3">
+                            <a
+                                className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                href="/"
+                            >
+                                Done
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {status === "failed" && (
+                <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
+                    <h3 className="text-lg font-semibold text-red-700 mb-2">Booking Failed</h3>
+                    <p className="text-sm text-red-800 mb-4">There was an error creating your booking. Please try again.</p>
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setStatus("idle")}
+                            className="px-4 py-2 bg-white border rounded hover:bg-gray-50"
+                        >
+                            Go back
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleSubmit}
+                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                            Retry
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

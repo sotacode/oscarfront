@@ -54,7 +54,7 @@ export const Navbar = () => {
 				</ul>
 			</NavbarContent> */}
 			<NavbarContent className="basis-1/5 pl-4" justify="end">
-				<NavbarMenuToggle className="flex sm:hidden"/>
+				<NavbarMenuToggle className="flex sm:hidden" />
 			</NavbarContent>
 
 			{/* <NavbarMenu>

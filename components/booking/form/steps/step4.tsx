@@ -67,47 +67,21 @@ export default function Step4() {
                 } catch (e) {
                     console.info('Could not load lottie, skipping animation');
                 }
-                const body = {
-                    destination: {
-                        location: {
-                            latLng: {
-                                latitude: allData.lat,
-                                longitude: allData.lng,
-                            }
-                        }
-                    },
-                    travelMode: "DRIVE",
-                    routingPreference: "TRAFFIC_AWARE",
-                    computeAlternativeRoutes: false,
-                    routeModifiers: {
-                        avoidTolls: false,
-                        avoidHighways: false,
-                        avoidFerries: false
-                    },
-                    languageCode: "en-US",
-                    units: "METRIC",
-                    formattedAddress: allData.formatted_address || allData.address,
-                    email: allData.email,
-                    fullName: allData.fullName,
-                    phone: allData.phone,
-                    serviceType: allData.serviceType,
-                    serviceDuration: allData.serviceDuration,
-                    address: allData.formatted_address || allData.address,
-                    placeId: allData.place_id,
-                };
-                const res = await fetch('http://localhost:5678/webhook-test/5ad36755-b2f4-4a3c-9e6f-03e6a28329c3', {
+                const res = await fetch('/api/availability', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'osmoz-appointments-key': `3zUZFg1RS2uRvpmuIh7awCv0joqa6u6mDBEsiz4tSFuUlt8obK8YU5RTSvl25g1l`,
                     },
-                    body: JSON.stringify(body),
+                    body: JSON.stringify({
+                        address: allData.formatted_address || allData.address,
+                        date: new Date().toISOString().split('T')[0], // Start from today
+                        lat: allData.lat,
+                        lng: allData.lng
+                    }),
                 });
                 if (!res.ok) throw new Error('Network response was not ok');
                 const json = await res.json();
-                // Expecting array with object that has `output` array
-                const out = Array.isArray(json) && json[0] && json[0].output ? json[0].output : [];
-                setAvailability(out);
+                setAvailability(json);
             } catch (err) {
                 console.error('Failed to load availability', err);
             } finally {
@@ -125,7 +99,7 @@ export default function Step4() {
     const chooseSlot = (dayId: number, hour: string, dayLabel: string) => {
         setSelectedDayId(dayId);
         setSelectedHour(hour);
-        console.log('Chosen slot:', availability[dayId-1].day, hour);
+        console.log('Chosen slot:', availability[dayId - 1].day, hour);
         // update registered fields and trigger validation immediately
         setValue('appointmentDay', dayLabel, { shouldValidate: true });
         setValue('appointmentHour', hour, { shouldValidate: true });
