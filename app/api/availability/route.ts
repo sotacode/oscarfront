@@ -135,9 +135,21 @@ export async function POST(request: Request) {
 
                         if (arrivalTime > slotStart.getTime()) {
                             valid = false;
+                            console.log(`Slot ${slotTime} invalid: Cannot arrive from previous appointment. Need ${travelTime}s, have ${(slotStart.getTime() - prevEnd) / 1000}s`);
+                        }
+                    } else {
+                        // If previous event has no location data, assume a default travel buffer (15 min)
+                        const defaultTravelBuffer = 15 * 60; // 15 minutes in seconds
+                        const prevEnd = new Date(previousEvent.end?.dateTime || "").getTime();
+                        const arrivalTime = prevEnd + (defaultTravelBuffer * 1000);
+
+                        if (arrivalTime > slotStart.getTime()) {
+                            valid = false;
+                            console.log(`Slot ${slotTime} invalid: Previous event has no location, using 15min buffer. Need ${defaultTravelBuffer}s, have ${(slotStart.getTime() - prevEnd) / 1000}s`);
                         }
                     }
                 }
+
 
                 // Check travel to next event
                 if (valid && nextEvent) {
@@ -155,8 +167,20 @@ export async function POST(request: Request) {
                         const departureTime = slotEnd.getTime();
                         const nextStart = new Date(nextEvent.start?.dateTime || "").getTime();
 
+                        // Check if mechanic can finish this appointment AND travel to next one
                         if (departureTime + (travelTime * 1000) > nextStart) {
                             valid = false;
+                            console.log(`Slot ${slotTime} invalid: Cannot travel to next appointment. Need ${travelTime}s, have ${(nextStart - departureTime) / 1000}s`);
+                        }
+                    } else {
+                        // If next event has no location data, assume a default travel buffer (15 min)
+                        const defaultTravelBuffer = 15 * 60; // 15 minutes in seconds
+                        const departureTime = slotEnd.getTime();
+                        const nextStart = new Date(nextEvent.start?.dateTime || "").getTime();
+
+                        if (departureTime + (defaultTravelBuffer * 1000) > nextStart) {
+                            valid = false;
+                            console.log(`Slot ${slotTime} invalid: Next event has no location, using 15min buffer. Need ${defaultTravelBuffer}s, have ${(nextStart - departureTime) / 1000}s`);
                         }
                     }
                 }
