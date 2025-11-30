@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Providers } from "./providers";
@@ -58,13 +58,6 @@ export const metadata: Metadata = {
   //   yandex: 'your-yandex-verification-code',
   // },
 
-  // Mobile optimization
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-
   // Robots
   robots: {
     index: true,
@@ -80,6 +73,13 @@ export const metadata: Metadata = {
 
   // Additional metadata
   category: 'Automotive Services',
+};
+
+// Viewport configuration (separate export in Next.js 14+)
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
