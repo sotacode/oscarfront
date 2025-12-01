@@ -18,6 +18,7 @@ export const step2Schema = z.object({
 export const step3Schema = z.object({
   serviceType: z.string().min(1, "Please select a service type."),
   serviceDuration: z.number().min(1, "Duration required."),
+  issueDescription: z.string().min(10, "Please describe the issue (minimum 10 characters)."),
 });
 
 export const step4Schema = z.object({

@@ -53,6 +53,10 @@ export default function Step5() {
                         <span className="text-sm md:text-base text-gray-600 font-medium min-w-[100px]">Service:</span>
                         <p className="text-sm md:text-base font-semibold text-secondary capitalize break-words">{allData.serviceType}</p>
                     </div>
+                    <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
+                        <span className="text-sm md:text-base text-gray-600 font-medium">Issue Description:</span>
+                        <p className="text-sm md:text-base font-medium text-secondary break-words whitespace-pre-wrap">{allData.issueDescription}</p>
+                    </div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                         <span className="text-sm md:text-base text-gray-600 font-medium min-w-[100px]">Date & Time:</span>
                         <p className="text-sm md:text-base font-semibold text-secondary break-words">{allData.appointmentDay} at {allData.appointmentHour}</p>

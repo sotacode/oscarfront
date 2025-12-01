@@ -30,7 +30,7 @@ export async function POST(request: Request) {
             phone,
             serviceType,
             address,
-            placeId,
+            place_id, // Use place_id (with underscore) to match form field name
             appointmentDay,
             appointmentHour,
             additionalInfo,
@@ -60,14 +60,23 @@ export async function POST(request: Request) {
 
         const endDateTime = new Date(startDateTime.getTime() + (serviceDuration * 1000));
 
-        // Format description
-        const placeUrl = `https://www.google.com/maps/place/?q=place_id:${placeId}`;
+        // Format description with location coordinates for travel time calculation
+        // Only include Google Maps link if place_id is available
+        const placeUrl = place_id
+            ? `https://www.google.com/maps/place/?q=place_id:${place_id}`
+            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
         const description = `Kia ora,
 Client Name: ${fullName}
 Service: ${serviceType}
-Description: ${additionalInfo || 'No additional information provided.'}
+Issue Description: ${body.issueDescription || 'No description provided.'}
+Additional Notes: ${additionalInfo || 'None'}
 Location: ${address} - ${placeUrl}
-Phone contact: ${phone}`;
+Phone contact: ${phone}
+
+Coordinates (for travel time calculation):
+Lat: ${lat}
+Lng: ${lng}`;
 
         // Create event
         const event = {

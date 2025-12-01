@@ -23,21 +23,42 @@ const getGoogleAuthClient = () => {
 
 // Helper to calculate travel time
 async function getTravelTime(origin: string, destination: string) {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    if (!apiKey) return 0;
+    // Use server-side API key (not exposed to client)
+    const apiKey = process.env.GOOGLE_MAPS_SERVER_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+        console.warn("Google Maps API key not found, using default travel buffer");
+        return 0;
+    }
 
     const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origin)}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
 
     try {
         const res = await fetch(url);
         const data = await res.json();
-        if (data.rows[0].elements[0].status === "OK") {
-            return data.rows[0].elements[0].duration.value; // seconds
+
+        // Validate response structure
+        if (!data || !data.rows || data.rows.length === 0) {
+            console.warn("Invalid Distance Matrix API response structure:", data);
+            return 0;
+        }
+
+        const row = data.rows[0];
+        if (!row || !row.elements || row.elements.length === 0) {
+            console.warn("No elements in Distance Matrix API response:", data);
+            return 0;
+        }
+
+        const element = row.elements[0];
+        if (element.status === "OK" && element.duration) {
+            return element.duration.value; // seconds
+        } else {
+            console.warn("Distance Matrix API element status:", element.status, "for route:", origin, "->", destination);
+            return 0;
         }
     } catch (error) {
         console.error("Error fetching distance matrix:", error);
     }
-    return 0; // Default to 0 if fails (should handle error better in prod)
+    return 0; // Default to 0 if fails
 }
 
 export async function POST(request: Request) {
