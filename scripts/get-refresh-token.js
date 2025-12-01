@@ -18,6 +18,7 @@ const CLIENT_ID = envVars.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = envVars.GOOGLE_CLIENT_SECRET;
 // Use the callback URL that is likely configured in Google Cloud Console
 const REDIRECT_URI = 'http://localhost:3000/api/auth/callback/google';
+
 console.log("-------")
 console.log({ CLIENT_ID, CLIENT_SECRET, REDIRECT_URI });
 if (!CLIENT_ID || !CLIENT_SECRET) {

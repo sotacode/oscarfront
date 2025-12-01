@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
+import businessConfig, { isWorkingDay, isTimeSlotBlocked, getServiceDuration, createNZDateTimeString } from "@/config/business";
 
 // Helper to get Google Auth Client
 const getGoogleAuthClient = () => {
@@ -63,21 +64,24 @@ async function getTravelTime(origin: string, destination: string) {
 
 export async function POST(request: Request) {
     try {
-        const { address, date, lat, lng, serviceDuration = 3600 } = await request.json(); // serviceDuration in seconds
+        const { address, date, lat, lng, serviceType } = await request.json();
 
         if (!address || !date) {
             return NextResponse.json({ error: "Missing address or date" }, { status: 400 });
         }
 
+        // Get service duration from business config
+        const serviceDuration = serviceType ? getServiceDuration(serviceType) : businessConfig.defaultServiceDuration;
+
         const auth = getGoogleAuthClient();
         const calendar = google.calendar({ version: "v3", auth });
 
-        // Define time range: Selected Date 00:00 to +7 days 23:59
+        // Define time range: Selected Date 00:00 to +N days 23:59
         const timeMin = new Date(date);
         timeMin.setHours(0, 0, 0, 0);
 
         const timeMax = new Date(timeMin);
-        timeMax.setDate(timeMax.getDate() + 7);
+        timeMax.setDate(timeMax.getDate() + businessConfig.availability.daysAhead);
         timeMax.setHours(23, 59, 59, 999);
 
         const eventsRes = await calendar.events.list({
@@ -91,14 +95,17 @@ export async function POST(request: Request) {
         const events = eventsRes.data.items || [];
 
         const availableSlots = [];
-        const workingHoursStart = 9;
-        const workingHoursEnd = 17;
-        const slotDuration = 3600; // 1 hour slots for checking
 
-        // Iterate through next 7 days
-        for (let i = 0; i < 7; i++) {
+        // Iterate through next N days
+        for (let i = 0; i < businessConfig.availability.daysAhead; i++) {
             const currentDay = new Date(timeMin);
             currentDay.setDate(currentDay.getDate() + i);
+
+            // Skip non-working days
+            if (!isWorkingDay(currentDay)) {
+                continue;
+            }
+
             const dayString = currentDay.toISOString().split('T')[0];
 
             // Filter events for this day
@@ -108,12 +115,17 @@ export async function POST(request: Request) {
             });
 
             const slots = [];
-            // Check every hour
-            for (let hour = workingHoursStart; hour < workingHoursEnd; hour++) {
+            // Check every hour within working hours
+            for (let hour = businessConfig.workingHours.start; hour < businessConfig.workingHours.end; hour++) {
+                // Check if this time slot is blocked
+                if (isTimeSlotBlocked(currentDay, hour)) {
+                    continue; // Skip blocked slots
+                }
+
                 const slotTime = `${hour.toString().padStart(2, '0')}:00`;
-                // IMPORTANT: Create dates in Pacific/Auckland timezone to match calendar events
-                // Format: YYYY-MM-DDTHH:MM:SS+13:00 (New Zealand timezone)
-                const slotStart = new Date(`${dayString}T${slotTime}:00+13:00`);
+                // IMPORTANT: Create dates in Pacific/Auckland timezone with automatic DST handling
+                // This automatically uses +13:00 (NZDT) or +12:00 (NZST) based on the date
+                const slotStart = new Date(createNZDateTimeString(dayString, slotTime));
                 const slotEnd = new Date(slotStart.getTime() + serviceDuration * 1000);
 
                 // 1. Check for direct overlap

@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
+import businessConfig, { getServiceDuration, createNZDateTimeString } from "@/config/business";
 
 // Helper to get Google Auth Client
 const getGoogleAuthClient = () => {
@@ -30,13 +31,12 @@ export async function POST(request: Request) {
             phone,
             serviceType,
             address,
-            place_id, // Use place_id (with underscore) to match form field name
+            place_id,
             appointmentDay,
             appointmentHour,
             additionalInfo,
             lat,
             lng,
-            serviceDuration = 3600 // Default 1 hour in seconds
         } = body;
 
         if (!fullName || !email || !serviceType || !address || !appointmentDay || !appointmentHour) {
@@ -46,22 +46,25 @@ export async function POST(request: Request) {
         const auth = getGoogleAuthClient();
         const calendar = google.calendar({ version: "v3", auth });
 
-        // Parse date and time
-        const [year, month, day] = appointmentDay.split('-');
-        const [hour, minute] = appointmentHour.split(':');
+        // Get service duration from business config
+        const duration = getServiceDuration(serviceType);
 
-        const startDateTime = new Date(
-            parseInt(year),
-            parseInt(month) - 1,
-            parseInt(day),
-            parseInt(hour),
-            parseInt(minute || '0')
-        );
+        // Create datetime in Pacific/Auckland timezone with automatic DST handling
+        const startDateTimeString = createNZDateTimeString(appointmentDay, appointmentHour);
 
-        const endDateTime = new Date(startDateTime.getTime() + (serviceDuration * 1000));
+        // DEBUG: Log the datetime string being created
+        console.log("Creating appointment:");
+        console.log("  Input:", appointmentDay, appointmentHour);
+        console.log("  DateTime string:", startDateTimeString);
+
+        const startDateTime = new Date(startDateTimeString);
+        console.log("  Parsed Date:", startDateTime.toISOString());
+        console.log("  NZ Time:", startDateTime.toLocaleString('en-NZ', { timeZone: 'Pacific/Auckland' }));
+
+        // Calculate end time
+        const endDateTime = new Date(startDateTime.getTime() + (duration * 1000));
 
         // Format description with location coordinates for travel time calculation
-        // Only include Google Maps link if place_id is available
         const placeUrl = place_id
             ? `https://www.google.com/maps/place/?q=place_id:${place_id}`
             : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
@@ -85,11 +88,11 @@ Lng: ${lng}`;
             description: description,
             start: {
                 dateTime: startDateTime.toISOString(),
-                timeZone: 'Pacific/Auckland',
+                timeZone: businessConfig.timezone,
             },
             end: {
                 dateTime: endDateTime.toISOString(),
-                timeZone: 'Pacific/Auckland',
+                timeZone: businessConfig.timezone,
             },
             attendees: [
                 { email: email }
@@ -106,13 +109,18 @@ Lng: ${lng}`;
         const response = await calendar.events.insert({
             calendarId: 'primary',
             requestBody: event,
-            sendUpdates: 'all', // Send email to attendees
+            sendUpdates: 'all',
         });
 
         return NextResponse.json({
             status: "created",
             eventId: response.data.id,
-            eventLink: response.data.htmlLink
+            eventLink: response.data.htmlLink,
+            debug: {
+                inputTime: `${appointmentDay} ${appointmentHour}`,
+                dateTimeString: startDateTimeString,
+                parsedISO: startDateTime.toISOString(),
+            }
         });
 
     } catch (error) {
