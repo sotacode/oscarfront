@@ -111,7 +111,9 @@ export async function POST(request: Request) {
             // Check every hour
             for (let hour = workingHoursStart; hour < workingHoursEnd; hour++) {
                 const slotTime = `${hour.toString().padStart(2, '0')}:00`;
-                const slotStart = new Date(`${dayString}T${slotTime}:00`);
+                // IMPORTANT: Create dates in Pacific/Auckland timezone to match calendar events
+                // Format: YYYY-MM-DDTHH:MM:SS+13:00 (New Zealand timezone)
+                const slotStart = new Date(`${dayString}T${slotTime}:00+13:00`);
                 const slotEnd = new Date(slotStart.getTime() + serviceDuration * 1000);
 
                 // 1. Check for direct overlap
