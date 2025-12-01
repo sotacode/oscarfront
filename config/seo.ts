@@ -21,7 +21,7 @@ export const seoConfig = {
     whatsapp: "https://wa.me/+64221048027",
 
     // Website
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://osmoz.co.nz",
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://osmozauto.co.nz",
 
     // SEO Keywords
     keywords: [

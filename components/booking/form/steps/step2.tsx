@@ -18,9 +18,10 @@ export default function Step2() {
     const [placeId, setPlaceId] = useState<string>("");
     const [lat, setLat] = useState<number | null>(null);
     const [lng, setLng] = useState<number | null>(null);
+    const [postcode, setPostcode] = useState<string>("");
 
     useEffect(() => {
-        
+
 
         let gmpMapEl: HTMLElement | null = null;
         let mapInstance: google.maps.Map | null = null;
@@ -62,12 +63,13 @@ export default function Step2() {
                             "name",
                             "place_id",
                             "geometry.location", // This ensures lat/lng is included
+                            "address_components",
                         ],
                         bounds: new window.google.maps.LatLngBounds(
                             { lat: -37.0, lng: 174.6 },
                             { lat: -36.7, lng: 175.0 }
                         ),
-                        strictBounds: true,
+                        strictBounds: false,
                     }
                 );
                 autocompleteRef.current = gmpAutocomplete;
@@ -86,9 +88,23 @@ export default function Step2() {
                     }
                     setAddressFormattedData(place.formatted_address || "");
                     setPlaceId(place.place_id || "");
+
+                    // Extract postcode
+                    let extractedPostcode = "";
+                    if (place.address_components) {
+                        for (const component of place.address_components) {
+                            if (component.types.includes("postal_code")) {
+                                extractedPostcode = component.long_name;
+                                break;
+                            }
+                        }
+                    }
+                    setPostcode(extractedPostcode);
+
                     console.log("Selected place:", place);
                     console.log("Formatted Address:", place.formatted_address);
                     console.log("Place ID:", place.place_id);
+                    console.log("Postcode:", extractedPostcode);
                     // Add marker
                     importLibrary("marker").then(({ AdvancedMarkerElement }) => {
                         if (mapInstance && place.geometry && place.geometry.location) {
@@ -123,13 +139,15 @@ export default function Step2() {
         setValue("address", inputValue);
         setValue("lat", lat ? lat.toString() : "");
         setValue("lng", lng ? lng.toString() : "");
+        setValue("postcode", postcode);
         // Trigger validation
         trigger("formatted_address");
         trigger("place_id");
         trigger("address");
         trigger("lat");
         trigger("lng");
-    }, [addressFormattedData, placeId, lat, lng]);
+        trigger("postcode");
+    }, [addressFormattedData, placeId, lat, lng, postcode]);
 
 
     return (
@@ -148,6 +166,11 @@ export default function Step2() {
                 isInvalid={!!errors.address}
                 errorMessage={errors.address?.message?.toString()}
             />
+            {errors.postcode && (
+                <div className="text-danger text-sm mb-4">
+                    {errors.postcode.message?.toString()}
+                </div>
+            )}
             <Input
                 label="formatted_address"
                 {...register("formatted_address")}
@@ -179,6 +202,14 @@ export default function Step2() {
                 errorMessage={errors.lat?.message?.toString()}
                 className="hidden"
                 value={placeId}
+            />
+            <Input
+                label="postcode"
+                {...register("postcode")}
+                isInvalid={!!errors.postcode}
+                errorMessage={errors.postcode?.message?.toString()}
+                className="hidden"
+                value={postcode}
             />
             <div ref={mapRef} className="w-full h-80 rounded-lg mb-8" />
         </div>

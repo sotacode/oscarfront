@@ -6,12 +6,15 @@ export const step1Schema = z.object({
   phone: z.string().min(8, "Invalid phone number"),
 });
 
+import { isPostcodeAllowed } from "@/config/service-area";
+
 export const step2Schema = z.object({
   address: z.string().min(10, "Please select an address from the suggestions."),
   formatted_address: z.string().min(10, "Please select an address from the suggestions."),
   place_id: z.string().min(1, "Please select an address from the suggestions."),
   lat: z.string().min(1, "Latitude is required."),
   lng: z.string().min(1, "Longitude is required."),
+  postcode: z.string().refine(isPostcodeAllowed, "Sorry, we don't service this area yet."),
 })
 
 
