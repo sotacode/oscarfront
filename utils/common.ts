@@ -8,14 +8,14 @@ export function validateEmail(email: string): boolean {
   }
   
   export function validateForm(form: FormContact): any {
-    //quita los espacios en blancos de cada campo
-  
-    const {name, email, subject, description} = form;
+    const {name, phone, email, rego, serviceRequired, message} = form;
   
     return {
       name: name.trim() === "" ? false : true,
+      phone: phone.trim() === "" ? false : true,
       email: email.trim() === "" || !validateEmail(email) ? false : true,
-      subject: subject.trim() === "" ? false : true,
-      description: description.trim() === "" ? false : true,
+      rego: true,
+      serviceRequired: serviceRequired.trim() === "" ? false : true,
+      message: message.trim() === "" ? false : true,
     };
   }

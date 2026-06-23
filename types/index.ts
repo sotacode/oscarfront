@@ -6,7 +6,9 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 export type FormContact = {
   name: string;
+  phone: string;
   email: string;
-  subject: string;
-  description: string;
+  rego: string;
+  serviceRequired: string;
+  message: string;
 };

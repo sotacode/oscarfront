@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Textarea, useDisclosure } from '@nextui-org/react'
+import { Button, Input, Select, SelectItem, Modal, ModalBody, ModalContent, ModalFooter, Spinner, Textarea, useDisclosure } from '@nextui-org/react'
 import { siteConfig } from '../config/site';
 import { FormContact } from '@/types';
 import { validateForm } from '@/utils/common';
@@ -8,25 +8,36 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegTimesCircle } from "react-icons/fa";
 import { useState } from 'react';
 
+const serviceOptions = [
+  { label: "Pre-Purchase Inspection", value: "pre-purchase-inspection" },
+  { label: "Vehicle Servicing", value: "vehicle-servicing" },
+  { label: "Fleet Servicing", value: "fleet-servicing" },
+  { label: "Brake Repairs", value: "brake-repairs" },
+  { label: "Suspension Repairs", value: "suspension-repairs" },
+  { label: "WOF Repairs", value: "wof-repairs" },
+  { label: "Computer Diagnostics", value: "computer-diagnostics" },
+];
+
 export const Form: React.FC<any> = () => {
   const { form } = siteConfig;
   const [contact, setContact] = useState<FormContact>({
     name: '',
+    phone: '',
     email: '',
-    subject: '',
-    description: '',
+    rego: '',
+    serviceRequired: '',
+    message: '',
   });
   const [submitAvailable, setSubmitAvailable] = useState<Boolean>(false);
   const [isLoading, setIsLoading] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [thereIsError, setThereIsError] = useState(false)
 
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const validates = validateForm(contact);
     setSubmitAvailable(true);
-    if (validates.name && validates.email && validates.subject && validates.description) {
+    if (validates.name && validates.phone && validates.email && validates.serviceRequired && validates.message) {
       setIsLoading(true);
       try {
         fetch('https://yggyzbh4ud.execute-api.us-east-1.amazonaws.com/send-email', {
@@ -41,9 +52,11 @@ export const Form: React.FC<any> = () => {
             console.log('Success:', data);
             setContact({
               name: '',
+              phone: '',
               email: '',
-              subject: '',
-              description: '',
+              rego: '',
+              serviceRequired: '',
+              message: '',
             });
             setSubmitAvailable(false);
             setThereIsError(false);
@@ -64,20 +77,8 @@ export const Form: React.FC<any> = () => {
     }
   }
   return (
-    <div className='mt-7'>
-      <div className="flex gap-4">
-        <Input
-          type="email"
-          variant="bordered"
-          labelPlacement='outside'
-          placeholder={form["EN"].emailPlaceholder}
-          label={form["EN"].email}
-          value={contact.email}
-          onValueChange={(value) => setContact(prev => ({ ...prev, email: value }))}
-          isInvalid={submitAvailable && !validateForm(contact).email}
-          color={submitAvailable && !validateForm(contact).email ? "danger" : "primary"}
-          errorMessage={submitAvailable && !validateForm(contact).email && form["EN"].errorEmail}
-        />
+    <div className='mt-7 w-full'>
+      <div className="flex flex-col md:flex-row gap-4">
         <Input
           type="text"
           variant="bordered"
@@ -89,36 +90,84 @@ export const Form: React.FC<any> = () => {
           isInvalid={submitAvailable && !validateForm(contact).name}
           color={submitAvailable && !validateForm(contact).name ? "danger" : "primary"}
           errorMessage={submitAvailable && !validateForm(contact).name && form["EN"].errorName}
+          className="flex-1"
+        />
+        <Input
+          type="email"
+          variant="bordered"
+          labelPlacement='outside'
+          placeholder={form["EN"].emailPlaceholder}
+          label={form["EN"].email}
+          value={contact.email}
+          onValueChange={(value) => setContact(prev => ({ ...prev, email: value }))}
+          isInvalid={submitAvailable && !validateForm(contact).email}
+          color={submitAvailable && !validateForm(contact).email ? "danger" : "primary"}
+          errorMessage={submitAvailable && !validateForm(contact).email && form["EN"].errorEmail}
+          className="flex-1"
         />
       </div>
-      <Input
-        type="text"
-        variant="bordered"
-        labelPlacement='outside'
-        placeholder={form["EN"].subjectPlaceholder}
-        label={form["EN"].subject}
-        value={contact.subject}
-        onValueChange={(value) => setContact(prev => ({ ...prev, subject: value }))}
-        isInvalid={submitAvailable && !validateForm(contact).subject}
-        color={submitAvailable && !validateForm(contact).subject ? "danger" : "primary"}
-        errorMessage={submitAvailable && !validateForm(contact).subject && form["EN"].errorSubject}
-        className='mt-3'
-      />
+      <div className="flex flex-col md:flex-row gap-4 mt-3">
+        <Input
+          type="tel"
+          variant="bordered"
+          labelPlacement='outside'
+          placeholder={form["EN"].phonePlaceholder}
+          label={form["EN"].phone}
+          value={contact.phone}
+          onValueChange={(value) => setContact(prev => ({ ...prev, phone: value }))}
+          isInvalid={submitAvailable && !validateForm(contact).phone}
+          color={submitAvailable && !validateForm(contact).phone ? "danger" : "primary"}
+          errorMessage={submitAvailable && !validateForm(contact).phone && form["EN"].errorPhone}
+          className="flex-1"
+        />
+        <Input
+          type="text"
+          variant="bordered"
+          labelPlacement='outside'
+          placeholder={form["EN"].regoPlaceholder}
+          label={form["EN"].rego}
+          value={contact.rego}
+          onValueChange={(value) => setContact(prev => ({ ...prev, rego: value }))}
+          className="flex-1"
+        />
+      </div>
+      <div className="mt-3">
+        <Select
+          label={form["EN"].serviceRequired}
+          placeholder="Select a service"
+          variant="bordered"
+          labelPlacement="outside"
+          selectedKeys={contact.serviceRequired ? [contact.serviceRequired] : []}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0] as string;
+            setContact(prev => ({ ...prev, serviceRequired: selected || '' }));
+          }}
+          isInvalid={submitAvailable && !validateForm(contact).serviceRequired}
+          color={submitAvailable && !validateForm(contact).serviceRequired ? "danger" : "primary"}
+          errorMessage={submitAvailable && !validateForm(contact).serviceRequired && form["EN"].errorServiceRequired}
+        >
+          {serviceOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
       <div className="w-full flex flex-col gap-2 mt-3">
         <Textarea
           variant="bordered"
-          label={form["EN"].description}
-          placeholder={form["EN"].descriptionPlaceholder}
+          label={form["EN"].message}
+          placeholder={form["EN"].messagePlaceholder}
           labelPlacement="outside"
-          value={contact.description}
-          onValueChange={(value) => setContact(prev => ({ ...prev, description: value }))}
-          isInvalid={submitAvailable && !validateForm(contact).description}
-          color={submitAvailable && !validateForm(contact).description ? "danger" : "primary"}
-          errorMessage={submitAvailable && !validateForm(contact).description && form["EN"].errorDescription}
+          value={contact.message}
+          onValueChange={(value) => setContact(prev => ({ ...prev, message: value }))}
+          isInvalid={submitAvailable && !validateForm(contact).message}
+          color={submitAvailable && !validateForm(contact).message ? "danger" : "primary"}
+          errorMessage={submitAvailable && !validateForm(contact).message && form["EN"].errorMessage}
         />
       </div>
-      <div className="w-full flex flex-col gap-2 my-3">
-        <Button color='primary' className="w-full py-2 px-4 rounded" onClick={handleSubmit}>
+      <div className="w-full flex flex-col gap-2 my-4">
+        <Button color='primary' className="w-full py-2 px-4 rounded font-semibold" onClick={handleSubmit}>
           {isLoading ? <Spinner color="warning" className='' /> : form["EN"].send}
         </Button>
       </div>

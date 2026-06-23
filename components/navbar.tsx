@@ -7,7 +7,6 @@ import {
 	NavbarItem,
 	NavbarMenuItem,
 } from "@nextui-org/navbar";
-;
 import { Link } from "@nextui-org/link";
 
 import { link as linkStyles } from "@nextui-org/theme";
@@ -16,7 +15,7 @@ import { siteConfig } from "@/config/site";
 import NextLink from "next/link";
 import clsx from "clsx";
 
-import { Select, SelectItem } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import Image from "next/image";
 
 export const Navbar = () => {
@@ -35,7 +34,7 @@ export const Navbar = () => {
 					</NextLink>
 				</NavbarBrand>
 			</NavbarContent>
-			{/* <NavbarContent className="basis-3/5" justify="center">
+			<NavbarContent className="basis-3/5 hidden sm:flex" justify="center">
 				<ul className="hidden sm:flex gap-4 justify-start ml-2">
 					{siteConfig.navItems.map((item) => (
 						<NavbarItem key={item.href}>
@@ -52,32 +51,53 @@ export const Navbar = () => {
 						</NavbarItem>
 					))}
 				</ul>
-			</NavbarContent> */}
+			</NavbarContent>
 			<NavbarContent className="basis-1/5 pl-4" justify="end">
+				<NavbarItem className="hidden sm:flex">
+					<Button
+						as={NextLink}
+						href="/booking"
+						color="primary"
+						variant="shadow"
+						size="sm"
+						className="font-semibold"
+					>
+						Book Now
+					</Button>
+				</NavbarItem>
 				<NavbarMenuToggle className="flex sm:hidden" />
 			</NavbarContent>
 
-			{/* <NavbarMenu>
+			<NavbarMenu>
 				<div className="mx-4 mt-2 flex flex-col gap-2">
 					{siteConfig.navMenuItems.map((item, index) => (
 						<NavbarMenuItem key={`${item}-${index}`}>
 							<Link
 								color={
-									index === 2
+									index === siteConfig.navMenuItems.length - 1
 										? "primary"
-										: index === siteConfig.navMenuItems.length - 1
-											? "danger"
-											: "foreground"
+										: "foreground"
 								}
-								href="#"
+								href={item.href}
 								size="lg"
 							>
 								{item.label}
 							</Link>
 						</NavbarMenuItem>
 					))}
+					<NavbarMenuItem>
+						<Button
+							as={NextLink}
+							href="/booking"
+							color="primary"
+							variant="shadow"
+							className="w-full mt-2 font-semibold"
+						>
+							Book Now
+						</Button>
+					</NavbarMenuItem>
 				</div>
-			</NavbarMenu> */}
+			</NavbarMenu>
 		</NextUINavbar >
 	);
 };

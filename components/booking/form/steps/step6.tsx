@@ -10,9 +10,8 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 // Service prices for display
 const SERVICE_PRICES: Record<string, number> = {
-    consultation: 20,
-    maintenance: 25,
-    repair: 35,
+    "pre-purchase-inspection": 150,
+    "pre-purchase inspection": 150,
 };
 
 function PaymentForm() {

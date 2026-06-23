@@ -18,7 +18,7 @@ export const businessConfig = {
     // Working Hours (24-hour format)
     workingHours: {
         start: 9,  // 9 AM
-        end: 19,   // 7 PM (19:00)
+        end: 19,   // 7 PM
     },
 
     // Working Days (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
