@@ -9,42 +9,37 @@ import {
 } from "@nextui-org/navbar";
 import { Link } from "@nextui-org/link";
 
-import { link as linkStyles } from "@nextui-org/theme";
-
 import { siteConfig } from "@/config/site";
 import NextLink from "next/link";
-import clsx from "clsx";
-
-import { Button } from "@nextui-org/react";
-import Image from "next/image";
 
 export const Navbar = () => {
 
 	return (
-		<NextUINavbar maxWidth="xl" position="sticky">
-			<NavbarContent className="basis-1/5" justify="start">
-				<NavbarBrand as="li" className="gap-3 max-w-fit">
-					<NextLink className="flex justify-start items-center gap-1" href="/">
-						{<Image
-							src="/logo.jpg"
-							alt="Osmoz"
-							width={50}
-							height={50}
-						/>}
+		<NextUINavbar
+			maxWidth="xl"
+			position="sticky"
+			classNames={{
+				base: "glass border-b border-white/20 shadow-sm",
+				wrapper: "px-4 sm:px-6",
+			}}
+		>
+			<NavbarContent className="basis-1/3" justify="start">
+				<NavbarBrand as="li" className="max-w-fit">
+					<NextLink className="flex justify-start items-center" href="/">
+						<span className="text-xl font-bold gradient-text">
+							Osmoz
+						</span>
 					</NextLink>
 				</NavbarBrand>
 			</NavbarContent>
-			<NavbarContent className="basis-3/5 hidden sm:flex" justify="center">
-				<ul className="hidden sm:flex gap-4 justify-start ml-2">
+
+			<NavbarContent className="basis-1/3 hidden sm:flex" justify="center">
+				<ul className="flex gap-1 justify-center">
 					{siteConfig.navItems.map((item) => (
 						<NavbarItem key={item.href}>
 							<NextLink
-								className={clsx(
-									linkStyles({ color: "foreground" }),
-									"data-[active=true]:text-primary data-[active=true]:font-medium"
-								)}
-								color="foreground"
 								href={item.href}
+								className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#00a79e] transition-colors duration-200 rounded-lg hover:bg-[#00a79e]/5"
 							>
 								{item.label}
 							</NextLink>
@@ -52,52 +47,25 @@ export const Navbar = () => {
 					))}
 				</ul>
 			</NavbarContent>
-			<NavbarContent className="basis-1/5 pl-4" justify="end">
-				<NavbarItem className="hidden sm:flex">
-					<Button
-						as={NextLink}
-						href="/booking"
-						color="primary"
-						variant="shadow"
-						size="sm"
-						className="font-semibold"
-					>
-						Book Now
-					</Button>
-				</NavbarItem>
-				<NavbarMenuToggle className="flex sm:hidden" />
+
+			<NavbarContent className="basis-1/3" justify="end">
+				<NavbarMenuToggle className="sm:hidden text-gray-700" />
 			</NavbarContent>
 
-			<NavbarMenu>
-				<div className="mx-4 mt-2 flex flex-col gap-2">
+			<NavbarMenu className="pt-6">
+				<div className="mx-4 flex flex-col gap-1">
 					{siteConfig.navMenuItems.map((item, index) => (
 						<NavbarMenuItem key={`${item}-${index}`}>
 							<Link
-								color={
-									index === siteConfig.navMenuItems.length - 1
-										? "primary"
-										: "foreground"
-								}
 								href={item.href}
-								size="lg"
+								className="w-full py-3 text-lg font-medium text-gray-700 hover:text-[#00a79e] transition-colors"
 							>
 								{item.label}
 							</Link>
 						</NavbarMenuItem>
 					))}
-					<NavbarMenuItem>
-						<Button
-							as={NextLink}
-							href="/booking"
-							color="primary"
-							variant="shadow"
-							className="w-full mt-2 font-semibold"
-						>
-							Book Now
-						</Button>
-					</NavbarMenuItem>
 				</div>
 			</NavbarMenu>
-		</NextUINavbar >
+		</NextUINavbar>
 	);
 };

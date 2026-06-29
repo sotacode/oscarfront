@@ -3,6 +3,7 @@ import { Metadata, Viewport } from "next";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Providers } from "./providers";
+import { Navbar } from "@/components/navbar";
 import clsx from "clsx";
 
 import seoConfig from "@/config/seo";
@@ -99,12 +100,11 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ forcedTheme: "light" }}>
-          <div className="h-screen w-full">
-            <main className="w-full max-w-none"> {/* Remove container and disable max-width */}
+          <div className="min-h-screen w-full flex flex-col">
+            <Navbar />
+            <main className="w-full max-w-none flex-1">
               {children}
             </main>
-            <footer className="w-full flex items-center justify-center">
-            </footer>
           </div>
         </Providers>
       </body>

@@ -1,5 +1,4 @@
 'use client'
-import { siteConfig } from "@/config/site";
 import HeroSection from "@/components/HeroSection";
 import WorkShowcaseSection from "@/components/WorkShowcaseSection";
 import ContactSection from "@/components/ContactSection";
@@ -95,9 +94,9 @@ export default function Home() {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
 			/>
 
-			<section className="min-h-screen w-full bg-gray-100 position-static">
+			<section className="min-h-screen w-full bg-white position-static">
 				<HeroSection />
-				<ServicesSection />
+				<div className="relative z-10 -mt-4"><ServicesSection /></div>
 				<ContactForm />
 				<WorkShowcaseSection />
 				<ContactSection />

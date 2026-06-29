@@ -9,7 +9,6 @@ import { FaRegTimesCircle } from "react-icons/fa";
 import { useState } from 'react';
 
 const serviceOptions = [
-  { label: "Pre-Purchase Inspection", value: "pre-purchase-inspection" },
   { label: "Vehicle Servicing", value: "vehicle-servicing" },
   { label: "Fleet Servicing", value: "fleet-servicing" },
   { label: "Brake Repairs", value: "brake-repairs" },

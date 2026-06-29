@@ -2,6 +2,8 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { Card, CardBody } from "@nextui-org/react"
+import { Button } from "@nextui-org/button"
+import { useRouter } from "next/navigation"
 
 const teamMembers = [
   {
@@ -19,130 +21,212 @@ const teamMembers = [
 ]
 
 export default function AboutPage() {
+  const router = useRouter()
+
   return (
-    <div className="min-h-screen w-full bg-gray-100">
+    <div className="min-h-screen w-full bg-gray-50">
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-[#00a79e] to-[#008080] py-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.h1
-            className="text-4xl md:text-5xl font-bold text-white mb-4"
-            initial={{ opacity: 0, y: -20 }}
+      <section className="relative w-full bg-gradient-to-br from-[#00a79e] via-[#00918a] to-[#008080] py-20 px-4 overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`, backgroundSize: '40px 40px' }} />
+        <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+
+        <div className="relative z-10 max-w-6xl mx-auto text-center">
+          <motion.span
+            className="inline-block px-4 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6 border border-white/20"
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
+          >
+            About Osmoz
+          </motion.span>
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold text-white mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
           >
             About Us
           </motion.h1>
           <motion.p
-            className="text-xl text-white/90 max-w-2xl mx-auto"
+            className="text-xl text-white/80 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
           >
             Your trusted mobile mechanic in Auckland
           </motion.p>
         </div>
+
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+            <path d="M0 80L60 72C120 64 240 48 360 42C480 36 600 40 720 48C840 56 960 68 1080 70C1200 72 1320 64 1380 60L1440 56V80H0Z" fill="#f9fafb"/>
+          </svg>
+        </div>
       </section>
 
       {/* Company Description */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+              <span className="inline-block px-4 py-1.5 bg-[#00a79e]/10 rounded-full text-[#00a79e] text-sm font-semibold mb-4">
+                Our Story
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                 Osmoz Mobile Mechanic
               </h2>
-              <p className="text-lg text-gray-600 mb-4">
+              <p className="text-lg text-gray-600 mb-5 leading-relaxed">
                 Osmoz Mobile Mechanic is a professional mobile mechanic service based in Auckland, New Zealand. We bring expert car repairs, maintenance, and inspections directly to your location &mdash; whether you&apos;re at home, work, or on the roadside.
               </p>
-              <p className="text-lg text-gray-600 mb-4">
+              <p className="text-lg text-gray-600 mb-5 leading-relaxed">
                 Our fully equipped mobile service van allows us to handle a wide range of automotive services, from routine maintenance to complex diagnostics. We pride ourselves on delivering honest, reliable, and affordable auto care.
               </p>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 With a focus on customer satisfaction and quality workmanship, we&apos;ve built a reputation as a trusted partner for vehicle owners across Auckland.
               </p>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.2 }}
               className="relative"
             >
-              <Image
-                src="/work/osmozstuff.png"
-                alt="Osmoz Mobile Mechanic Team"
-                width={600}
-                height={400}
-                className="rounded-lg shadow-lg object-cover w-full"
-              />
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
+                <Image
+                  src="/work/osmozstuff.png"
+                  alt="Osmoz Mobile Mechanic Team"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              {/* Floating card */}
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-5 shadow-xl border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-[#00a79e]/10 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-[#00a79e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Quality Assured</p>
+                    <p className="text-sm text-gray-500">Satisfaction guaranteed</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Values */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
-            Why Choose Us
-          </h2>
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-block px-4 py-1.5 bg-[#00a79e]/10 rounded-full text-[#00a79e] text-sm font-semibold mb-4">
+              Why Choose Us
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Our Values
+            </h2>
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card>
-              <CardBody className="text-center p-6">
-                <div className="w-16 h-16 bg-[#008785]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-[#008785]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            {[
+              {
+                icon: (
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Quality Service</h3>
-                <p className="text-gray-600">We use only high-quality parts and stand behind our work with a satisfaction guarantee.</p>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody className="text-center p-6">
-                <div className="w-16 h-16 bg-[#008785]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-[#008785]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                ),
+                title: "Quality Service",
+                description: "We use only high-quality parts and stand behind our work with a satisfaction guarantee.",
+              },
+              {
+                icon: (
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Quick Turnaround</h3>
-                <p className="text-gray-600">We understand the importance of your time and strive to get you back on the road quickly.</p>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody className="text-center p-6">
-                <div className="w-16 h-16 bg-[#008785]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-[#008785]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                ),
+                title: "Quick Turnaround",
+                description: "We understand the importance of your time and strive to get you back on the road quickly.",
+              },
+              {
+                icon: (
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">We Come to You</h3>
-                <p className="text-gray-600">Our mobile service brings expert care directly to your location anywhere in Auckland.</p>
-              </CardBody>
-            </Card>
+                ),
+                title: "We Come to You",
+                description: "Our mobile service brings expert care directly to your location anywhere in Auckland.",
+              },
+            ].map((value, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+              >
+                <Card className="h-full card-hover border border-gray-100 bg-white">
+                  <CardBody className="text-center p-8">
+                    <div className="w-16 h-16 bg-[#00a79e]/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-[#00a79e]">
+                      {value.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
+                    <p className="text-gray-600 leading-relaxed">{value.description}</p>
+                  </CardBody>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Team Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
-            Meet the Team
-          </h2>
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-block px-4 py-1.5 bg-[#00a79e]/10 rounded-full text-[#00a79e] text-sm font-semibold mb-4">
+              Our Team
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Meet the Team
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              The people behind Osmoz Mobile Mechanic
+            </p>
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {teamMembers.map((member, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
               >
-                <Card className="overflow-hidden">
+                <Card className="overflow-hidden card-hover border border-gray-100 bg-white">
                   <div className="relative h-64">
                     <Image
                       src={member.image}
@@ -152,14 +236,43 @@ export default function AboutPage() {
                     />
                   </div>
                   <CardBody className="p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-1">{member.name}</h3>
-                    <p className="text-[#008785] font-medium mb-3">{member.role}</p>
-                    <p className="text-gray-600">{member.bio}</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+                    <p className="text-[#00a79e] font-semibold text-sm mb-3">{member.role}</p>
+                    <p className="text-gray-600 leading-relaxed">{member.bio}</p>
                   </CardBody>
                 </Card>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-gradient-to-r from-[#00a79e] to-[#008080] rounded-3xl p-10 md:p-14"
+          >
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+              Ready to Book Your Inspection?
+            </h2>
+            <p className="text-white/80 mb-8 text-lg">
+              Get a thorough pre-purchase inspection from our expert team.
+            </p>
+            <Button
+              size="lg"
+              color="secondary"
+              variant="shadow"
+              className="font-semibold px-8 rounded-full"
+              onPress={() => router.push('/booking')}
+            >
+              Book Now
+            </Button>
+          </motion.div>
         </div>
       </section>
     </div>

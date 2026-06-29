@@ -1,10 +1,17 @@
 "use client";
 import { Textarea } from "@nextui-org/react";
 import { useFormContext } from "react-hook-form";
+import { useEffect } from "react";
 
 export default function Step3() {
-  const { register, watch, formState: { errors } } = useFormContext();
+  const { register, watch, setValue, formState: { errors } } = useFormContext();
   const issueDescription = watch("issueDescription") || "";
+
+  // Set the service type and duration for Pre-Purchase Inspection on mount
+  useEffect(() => {
+    setValue("serviceType", "pre-purchase-inspection");
+    setValue("serviceDuration", 3600);
+  }, [setValue]);
 
   return (
     <div className="flex flex-col gap-6">

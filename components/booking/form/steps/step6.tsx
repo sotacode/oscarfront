@@ -8,11 +8,7 @@ import { useStepNavigation } from "../FormWrapper";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-// Service prices for display
-const SERVICE_PRICES: Record<string, number> = {
-    "pre-purchase-inspection": 150,
-    "pre-purchase inspection": 150,
-};
+const PPI_PRICE = 150;
 
 function PaymentForm() {
     const stripe = useStripe();
@@ -51,7 +47,6 @@ function PaymentForm() {
             }
 
             if (paymentIntent && paymentIntent.status === "succeeded") {
-                // Payment successful - now create appointment
                 const appointmentRes = await fetch('/api/create-appointment', {
                     method: 'POST',
                     headers: {
@@ -59,6 +54,7 @@ function PaymentForm() {
                     },
                     body: JSON.stringify({
                         ...allData,
+                        serviceType: "pre-purchase-inspection",
                         paymentIntentId: paymentIntent.id,
                     }),
                 });
@@ -73,7 +69,6 @@ function PaymentForm() {
                     setValue("paymentStatus", "succeeded");
                 }
 
-                // Navigate to Step 7
                 setTimeout(() => {
                     navigation?.goToNextStep();
                 }, 100);
@@ -88,11 +83,8 @@ function PaymentForm() {
         }
     };
 
-    const price = SERVICE_PRICES[allData.serviceType?.toLowerCase()] || 0;
-
     return (
         <div className="flex flex-col gap-6">
-            {/* Payment Summary Card */}
             <div className="bg-white border-2 border-gray-200 rounded-xl p-4 md:p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
                     <svg className="w-5 h-5 md:w-6 md:h-6 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,12 +93,11 @@ function PaymentForm() {
                     <h3 className="font-bold text-base md:text-lg text-secondary">Payment Summary</h3>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-sm md:text-base text-gray-600 font-medium capitalize">Service: {allData.serviceType}</span>
-                    <span className="text-lg md:text-xl font-bold text-primary">${price}.00 NZD</span>
+                    <span className="text-sm md:text-base text-gray-600 font-medium">Service: Pre-Purchase Inspection</span>
+                    <span className="text-lg md:text-xl font-bold text-primary">${PPI_PRICE}.00 NZD</span>
                 </div>
             </div>
 
-            {/* Payment Element - No wrapper to avoid touch interference */}
             <div className="-mx-1">
                 <PaymentElement
                     options={{
@@ -120,7 +111,6 @@ function PaymentForm() {
                 />
             </div>
 
-            {/* Error Message */}
             {error && (
                 <div className="flex items-center gap-2 p-3 md:p-4 bg-red-50 border-2 border-red-200 rounded-lg text-red-600">
                     <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -130,7 +120,6 @@ function PaymentForm() {
                 </div>
             )}
 
-            {/* Pay Button */}
             <Button
                 type="button"
                 color="primary"
@@ -140,7 +129,7 @@ function PaymentForm() {
                 className="w-full font-semibold text-base md:text-lg"
                 onPress={handleSubmit}
             >
-                {loading ? "Processing Payment..." : `Pay $${price}.00 NZD`}
+                {loading ? "Processing Payment..." : `Pay $${PPI_PRICE}.00 NZD`}
             </Button>
         </div>
     );
@@ -153,7 +142,6 @@ export default function Step6() {
     const allData = getValues();
 
     useEffect(() => {
-        // Create payment intent when component mounts
         const createPaymentIntent = async () => {
             try {
                 const res = await fetch('/api/create-payment-intent', {
@@ -162,7 +150,7 @@ export default function Step6() {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        serviceType: allData.serviceType,
+                        serviceType: "pre-purchase-inspection",
                     }),
                 });
 
@@ -176,9 +164,8 @@ export default function Step6() {
         };
 
         createPaymentIntent();
-    }, [allData.serviceType]);
+    }, []);
 
-    // Don't render payment form if we're done (will show Step 7 instead)
     if (allData.status === "created" || allData.status === "failed") {
         return null;
     }
@@ -210,7 +197,6 @@ export default function Step6() {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Header Section */}
             <div className="space-y-2">
                 <h2 className="text-xl md:text-2xl font-bold text-secondary">Payment</h2>
                 <p className="text-sm md:text-base text-gray-600">Complete your payment to confirm the booking</p>

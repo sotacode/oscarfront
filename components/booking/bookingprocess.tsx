@@ -7,7 +7,7 @@ import MultiStepForm from './form/FormWrapper';
 
 export const BookingProcess = () => {
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center text-center bg-gradient-to-br from-[#00a79e] to-[#008080] px-4 py-8">
+    <div className="min-h-[calc(100vh-64px)] w-full flex flex-col justify-center items-center text-center bg-gradient-to-br from-[#00a79e] to-[#008080] px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -29,13 +29,7 @@ export const BookingProcess = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <span className="inline-block">
-          <span className="animate-text-slide overflow-hidden">
-            <span className="inline-block animate-slide-up">
-              <span className="inline-block">Book Your Pre-Purchase Inspection</span>
-            </span>
-          </span>
-        </span>
+        Book Your Pre-Purchase Inspection
       </motion.h1>
       <motion.div
         className="text-xl md:text-2xl text-white mb-8 max-w-2xl w-full max-w-md"
